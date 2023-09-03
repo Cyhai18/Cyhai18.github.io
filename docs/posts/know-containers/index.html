@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  
+    
+  <title>认识容器 | HOI</title>
+  <meta name="author" content="HOI CHAN">
+  <meta name="description" content="学习docker的一些记录">
+  <meta name="keywords" content="blog,developer,personal">
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="认识容器"/>
+<meta name="twitter:description" content="学习docker的一些记录"/>
+
+  <meta property="og:title" content="认识容器" />
+<meta property="og:description" content="学习docker的一些记录" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://cyhai18.github.io/posts/know-containers/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-08-03T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-08-03T00:00:00+00:00" />
+
+  <link rel="stylesheet" href="/css/bootstrap.min.css"  crossorigin="anonymous">
+  
+  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/all.min.css" rel="stylesheet" type="text/css">
+
+  <link rel="stylesheet" href="/sass/main.css">
+
+  <link rel="stylesheet" href="/zoomjs/zoom.min.css">
+
+  <script src=/js/lazysizes.min.js></script>
+
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  
+
+</head>
+
+
+
+<body ontouchstart="">
+  
+  
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top ">
+  <div class="container-fluid">
+    
+    <div class="navbar-header page-scroll">
+      <button type="button" class="navbar-toggle">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://cyhai18.github.io/">HOI</a>
+    </div>
+    
+    <div id="huxblog_navbar">
+      <div class="navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          
+          <li><a href="/" title="Home">Home</a></li>
+          
+          <li><a href="/archive/" title="Archive">Archive</a></li>
+          
+          <li><a href="/about/" title="About">About</a></li>
+          
+
+          <li class="search-icon">
+            <a href="javascript:void(0)">
+              <i class="fa fa-search"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+  </div>
+  
+</nav>
+<script>
+  
+  
+  
+  var $body = document.body;
+  var $toggle = document.querySelector(".navbar-toggle");
+  var $navbar = document.querySelector("#huxblog_navbar");
+  var $collapse = document.querySelector(".navbar-collapse");
+
+  var __HuxNav__ = {
+    close: function () {
+      $navbar.className = " ";
+      
+      setTimeout(function () {
+        
+        if ($navbar.className.indexOf("in") < 0) {
+          $collapse.style.height = "0px";
+        }
+      }, 400);
+    },
+    open: function () {
+      $collapse.style.height = "auto";
+      $navbar.className += " in";
+    },
+  };
+
+  
+  $toggle.addEventListener("click", function (e) {
+    if ($navbar.className.indexOf("in") > 0) {
+      __HuxNav__.close();
+    } else {
+      __HuxNav__.open();
+    }
+  });
+
+  
+
+  document.addEventListener("click", function (e) {
+    if (e.target == $toggle) return;
+    if (e.target.className == "icon-bar") return;
+    __HuxNav__.close();
+  });
+</script>
+  
+<div class="search-page">
+  <div class="search-icon-close-container">
+    <span class="search-icon-close">
+      <i class="fa fa-chevron-down"></i>
+    </span>
+  </div>
+  <div class="search-main container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <form></form>
+        <input type="text" id="search-input" placeholder="$ grep...">
+        </form>
+        <div id="search-results" class="mini-post-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+  
+
+
+<style type="text/css">
+  header.intro-header {
+    position: relative;
+    background-image: url('/img/container-bg.jpg');
+  }
+</style>
+
+<header class="intro-header ">
+
+  <div class="header-mask"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <div class="tags">
+            
+            <a class="tag" href="/tags/%E5%AE%B9%E5%99%A8/" title="容器">容器</a>
+            
+            <a class="tag" href="/tags/docker/" title="docker">docker</a>
+            
+            <a class="tag" href="/tags/k8s/" title="K8s">K8s</a>
+            
+          </div>
+          <h1>认识容器</h1>
+          <h2 class="subheading"></h2>
+          <span class="meta">
+            Posted by  HOI CHAN 
+            on Thu, Aug 3, 2023
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  
+
+
+<article>
+  <div class="container">
+    <div class="row">
+
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              post-container">
+        <h3 id="一容器的发展">一、容器的发展<a class="anchorjs-link" href="#%e4%b8%80%e5%ae%b9%e5%99%a8%e7%9a%84%e5%8f%91%e5%b1%95"></a></h3><p>大部分应用是运行在服务器之上的。曾经，每个服务器只能运行单一应用。</p>
+<p>虚拟机的到来允许多应用能够稳定、安全地同时运行在一个服务器中了。不过最大的缺点就是依赖其专用的操作系统(OS)。OS会占用额外的CPU、RAM和存储，而且虚拟机启动通常比较慢，并且可移植性比较差。</p>
+<p>到了容器，其与虚拟机的主要区别在于，容器的运行不会独占操作系统。实际上，运行在相同宿主机上的容器是共享一个操作系统的，这样就能够节省大量的系统资源，同时容器还具有启动快和便于迁移等优势。</p>
+<h3 id="二容器与镜像">二、容器与镜像<a class="anchorjs-link" href="#%e4%ba%8c%e5%ae%b9%e5%99%a8%e4%b8%8e%e9%95%9c%e5%83%8f"></a></h3><p>镜像包含了基础操作系统，以及应用程序运行所需的代码和依赖包。镜像实际上等价于未运行的容器，容器是镜像的运行时实例。</p>
+<p>通常是从某个镜像启动一个或多个容器。一旦容器从镜像启动后，二者之间就变成了互相依赖的关系，并且在镜像上启动的容器全部停止之前，镜像是无法被删除的。</p>
+<p><figure>
+  <a class="paragraph-image">
+    <img data-src="01.png" data-action="zoom" alt=""  class="lazyload">
+  </a>
+  
+</figure></p>
+<h3 id="三应用容器化">三、应用容器化<a class="anchorjs-link" href="#%e4%b8%89%e5%ba%94%e7%94%a8%e5%ae%b9%e5%99%a8%e5%8c%96"></a></h3><p>Docker的核心思想就是如何将应用整合到容器中，并且能在容器中实际运行。将应用整合到容器中并且运行起来的这个过程，称为“容器化”。</p>
+<p>完整的应用容器化过程主要分为以下几个步骤：</p>
+<ol>
+<li>编写代码。</li>
+<li>创建 Dockerfile 文件，其中包括当前应用的描述、依赖以及该如何运行这个应用。</li>
+<li>对该 Dockerfile 执行 docker image build 命令。</li>
+<li>等待 Docker 将应用程序构建到 Docker 镜像中。</li>
+</ol>
+<p>一旦应用容器化完成（即应用被打包为一个Docker镜像），就能以镜像的形式交付并以容器的方式运行了。</p>
+<h4 id="31dockfile分析">3.1、Dockfile分析<a class="anchorjs-link" href="#31dockfile%e5%88%86%e6%9e%90"></a></h4><p>通常放在项目的根目录中，指导 Docker 创建一个包含当前应用的镜像。</p>
+<p>每个 Dockerfile 文件第一行都是 <code>FROM</code> 指令。<code>FROM</code> 指令指定的镜像，会作为当前镜像的一个基础镜像层，当前应用的剩余内容会作为新增镜像层添加到基础镜像层之上。</p>
+<p>可以通过添加 <code>LABLE</code> 标签的方式来为镜像添加自定义元数据。例如 <code>maintainer=&quot;xxx@tencent.com&quot;</code> 使用标签备注维护者信息有助于为该镜像的潜在使用者提供沟通途径，这是一种值得提倡的做法。</p>
+<p><code>RUN</code> 指令会在 FROM 指令指定的基础镜像之上，新建一个镜像层来存储 <code>RUN</code> 指令安装的内容。</p>
+<p><code>COPY . / src</code> 指令将应用相关文件从构建上下文复制到了当前镜像中，并且新建一个镜像层来存储。</p>
+<p><code>WORKDIR</code> 指令为 Dockerfile 中尚未执行的指令设置工作目录。该目录与镜像相关，并且会作为元数据记录到镜像配置中，但不会创建新的镜像层。</p>
+<p>通过 <code>EXPOSE</code> 指令设置相应的端口来让外界访问容器的服务。最后，通过 <code>ENTRYPOINT</code> 指令来指定当前镜像的应用的入口文件。<code>EXPOSE</code> 和 <code>ENTRYPOINT</code> 也是会作为镜像的元数据被保存下来，不会产生新的镜像层。</p>
+<h4 id="32构建具体镜像">3.2、构建具体镜像<a class="anchorjs-link" href="#32%e6%9e%84%e5%bb%ba%e5%85%b7%e4%bd%93%e9%95%9c%e5%83%8f"></a></h4><ol>
+<li><code>docker image build -t web:latest .</code></li>
+</ol>
+<p>上面的命令构建并生成一个名为 web:latest 的镜像。命令最后的 <code>.</code> 表示 Docker 在进行构建的时候，使用当前目录作为构建上下文。</p>
+<ol start="2">
+<li><code>docker image ls</code></li>
+</ol>
+<p>接着可以使用该命令来检查本地 Docker 镜像库是否包含刚才构建的镜像。</p>
+<ol start="3">
+<li><code>docker image inspect web:latest</code></li>
+</ol>
+<p>可使用该命令来确认构建的镜像配置是否正确。它会列出Dockerfile中设置的所有配置项。</p>
+<h4 id="33运行应用程序">3.3、运行应用程序<a class="anchorjs-link" href="#33%e8%bf%90%e8%a1%8c%e5%ba%94%e7%94%a8%e7%a8%8b%e5%ba%8f"></a></h4><p><code>docker container run -d --name ctest -p 80:8080 web:latest</code></p>
+<p>上述命令会基于 web:latest 镜像，启动一个名为 ctest 的容器。该容器将内部的 8080 端口与 docker 主机的 80 端口进行映射。-d 参考的作用是让应用程序以守护线程的方式在后台运行。接下来直接在浏览器输入 docker 主机的 IP 地址及端口，就能直接访问这个应用了。</p>
+<p><code>docker container ls</code></p>
+<p>一般可以使用该指令来确认容器是否已经启动并且正常运行。</p>
+<p>值得注意的是，对于 Docker 镜像来说，过大的体积并不好。在生产环境下，一般使用多阶段构建方式来优化构建过程，把非生产环境需要的物料给剔除掉。多阶段构建方式使用一个 Dockerfile，其中包含多个 FROM 指令。每一个 FROM 指令都是一个新的构建阶段，并且可以方便地复制之前阶段的构建。</p>
+<h3 id="四容器的编排">四、容器的编排<a class="anchorjs-link" href="#%e5%9b%9b%e5%ae%b9%e5%99%a8%e7%9a%84%e7%bc%96%e6%8e%92"></a></h3><p>所谓容器编排，说白点就是针对那些能够以容器的形式打包和运行的应用的部署和管理，使它们能够根据业务需求实现扩缩容、故障自愈和在线升级。目前一般都把这个工作交给 Kubernetes（以下简称 K8s），它最突出的特点是，一旦完成配置，可以在无须人工干预决策的情况下自动完成这些工作。</p>
+<h4 id="41k8s-和-docker-的区别">4.1、K8s 和 Docker 的区别<a class="anchorjs-link" href="#41k8s-%e5%92%8c-docker-%e7%9a%84%e5%8c%ba%e5%88%ab"></a></h4><p>从运行架构上来说，假设在某生产环境中的 K8s 集群是由 10 个节点构成的。那么其中的每个节点都是以 Docker 作为其容器运行时（Container Runtime）。也就是说，Docker 是一种更加偏向底层的技术，它负责诸如启停容器的操作；而 K8s 是一种更加偏向上层的技术，它注重集群范畴的管理，比如决定在哪个节点上运行容器、决定什么适合进行扩缩容或升级。</p>
+<p><figure>
+  <a class="paragraph-image">
+    <img data-src="02.png" data-action="zoom" alt=""  class="lazyload">
+  </a>
+  
+</figure></p>
+<h4 id="42k8s-工作过程">4.2、K8s 工作过程<a class="anchorjs-link" href="#42k8s-%e5%b7%a5%e4%bd%9c%e8%bf%87%e7%a8%8b"></a></h4><p>为了让 K8s 运行起来，首先需要将自己的 App 打包并部署到集群。一个或多个主节点（master）与若干工作节点（node）构成一个完整的集群。主节点负责管理整个集群，应用服务运行在工作节点上。</p>
+<p>K8s 通过声明式的方式来管理应用。可以通过 YAML 格式的 manifest 文件来告知 K8s 集群自己希望应用运行的样子。这就是所谓的期望状态。其中包括：需要使用哪个镜像、有多少副本需要运行、哪个网络端口需要监听，以及如何执行更新。将文件发送给 K8s，然后剩下的工作交给 K8s 来完成就可以了。</p>
+<p>在 K8s 上运行应用的过程可以简单分为如下几个部分：</p>
+<ol>
+<li>将应用在容器内打包。</li>
+<li>将每个容器集成到 Pod。</li>
+<li>使用更高层面的控制面板将 Pod 在集群中部署，例如 Deployment、StatefulSet。</li>
+</ol>
+<p><strong>Pod</strong></p>
+<p>用户无法直接在 K8s 集群中运行一个容器，容器必须并且总是需要在 Pod 中才能运行。首先介绍一下 Pod 这个术语的起源：在英语中，会将 a group of whales（一群鲸鱼）称作 a Pod of whales，Pod 就是来源于此。因为 Docker 的 Logo 是鲸鱼，所以在 K8s 中会将包含了一组容器的事物称作 Pod。</p>
+<p>整体来看，Pod 是一个用于运行容器的有限制的环境。Pod 本身并不会运行任何东西，只是作为一个承载容器的沙箱而存在。换一种说法，Pod 就是为用户在宿主机操作系统中划出有限的一部分特定区域，并且在其中运行一个或者多个容器，这就是 Pod。</p>
+<p>如果在 Pod 中运行多个容器，那么多个容器间是共享相同的 Pod 环境的。即共享内存，磁盘、网络以及其他资源等。举一个具体的例子，运行在相同 Pod 中的所有容器都有相同的 IP 地址。</p>
+<p>典型的 Pod 生命周期是这样的：用户定义一个 YAML 格式的清单文件，并将其 POST 到 API Server。一旦发送成功，清单文件中的内容就被作为“期望状态”，持久化记录在集群存储中。然后 Pod 被调度到一个健康的、有充足资源的节点上。一旦完成调度，就会进入等待状态，此时节点会下载镜像并启动容器。在所有资源就绪前，Pod 的状态都保持在等待状态。一切就绪后，Pod 进入运行状态。在完成所有任务后，会停止并进入成功状态。当 Pod 无法启动时，保持在等待状态或进入失败状态。</p>
+<p><figure>
+  <a class="paragraph-image">
+    <img data-src="03.png" data-action="zoom" alt=""  class="lazyload">
+  </a>
+  
+</figure></p>
+<p><strong>Deployment</strong></p>
+<p>大多数时间，用户通过更上层的控制器来完成 Pod 部署。例如常用的 Deployment，是对 Pod 的更高一层的封装，除 Pod 之外，还提供了如扩缩容管理、不停机升级和回滚等其他特性。Deployment 在底层利用了另一种名为 ReplicaSet 的对象，总体来说，Deployment 使用 ReplicaSet 来提供自愈和扩缩容能力。</p>
+<p>K8s 实现配置文件中所描述的状态的基础是底层调谐循环（reconciliation loop，也称作control loop）。ReplicaSet 的底层调谐循环能够定期检查集群中 Pod 的副本数是否达标。如果副本数不足，则增加；如果副本数过多，则销毁一些。说得清楚一些，即 K8s 会持续确保当前状态与期望状态保持一致。</p>
+<p>现在假设遇到了一个 Bug，并且需要部署一个新的镜像来完成修复。因此修改了同一个 Deployment 的 YAML 文件，将镜像版本更新并重新 POST 到 API Server。这会在集群中注册新的期望状态，需要同样数量的 Pod，但全部都要运行新版的镜像。为了达到这一点，K8s 基于新镜像的 Pod 创建了一个新的 ReplicaSet。此时就有两个 ReplicaSet 了，一个是包含基于旧版镜像的 Pod，一个是新版本的 Pod。每次 K8s 增加新 ReplicaSet 中的 Pod 数量的时候，都会相应地减少旧 ReplicaSet 中的 Pod 数量。从而在零宕机的情况下实现了一种平滑的滚动升级。</p>
+<p><figure>
+  <a class="paragraph-image">
+    <img data-src="04.png" data-action="zoom" alt=""  class="lazyload">
+  </a>
+  
+</figure></p>
+<p>值得注意的是，旧版的 ReplicaSet 仍然有完整的配置信息，包括旧版的镜像。旧版的 ReplicaSet 已经暂停并且不再管理任何 Pod。然而仍然保留了所有的配置信息。这使回滚到前一版本成为可能。回滚与滚动升级的过程正好相反，启用旧的 ReplicaSet，停用当前的 ReplicaSet。就是这么简单。</p>
+<p><strong>K8s Service</strong></p>
+<p>需要明确的是，在某个 Pod 失效之后，它会被一个拥有新的 IP 的 Pod 代替。Deployment 扩容也会引入拥有新 IP 的 Pod，而缩容则会删除 Pod。这会导致大量的 IP 流失，因而 Pod 的 IP 地址是不可靠的。这时候就需要 K8s 的 Service 对象出马了，它能够为一组动态的 Pod 提供稳定可靠的网络管理能力。每一个 Service 都拥有固定的 IP 地址、固定的 DNS 名称，以及固定的端口。最后，Service 利用 Label 来动态选择将流量转发至哪些 Pod。</p>
+<p><figure>
+  <a class="paragraph-image">
+    <img data-src="05.png" data-action="zoom" alt=""  class="lazyload">
+  </a>
+  
+</figure></p>
+<p>随着 Pod 的时常进出，Service 会动态更新其维护的相匹配的健康 Pod 列表。具体来说，其中的匹配关系是通过 Label 筛选器和名为 Endpoint 对象的结构共同完成的。每一个 Service 在被创建的时候，都会得到一个关联的 Endpoint 对象。整个 Endpoint 对象其实就是一个动态的列表，其中包含集群中所有的匹配 Service Label 筛选器的健康 Pod。K8s 会不断地检查 Service 的 Label 筛选器和当前集群中健康 Pod 的列表。如果有新的能够匹配 Label 筛选器的 Pod 出现，它就会被加入 Endpoint 对象，而消失的 Pod 则会被剔除。也就是说，Endpoint 对象始终是保持更新的。这时，当 Service 需要将流量转发到 Pod 的时候，就会到 Endpoint 对象中最新的 Pod 的列表中进行查找。</p>
+<h3 id="五总结">五、总结<a class="anchorjs-link" href="#%e4%ba%94%e6%80%bb%e7%bb%93"></a></h3><p>以上只是简单的一些整理和介绍，当然还有实操的部分，后续再记录吧。</p>
+
+
+        <hr style="visibility: hidden;" />
+        <ul class="pager">
+          
+          
+        </ul>
+        <hr style="visibility: hidden;" />
+
+        
+        
+
+
+
+
+
+
+      </div>
+
+      
+      
+      
+      <div class="
+              col-lg-2 col-lg-offset-0
+              visible-lg-block
+              sidebar-container
+              catalog-container">
+        <div class="side-catalog">
+          <hr class="hidden-sm hidden-xs">
+          <h5>
+            <a class="catalog-toggle" href="#">CATALOG</a>
+          </h5>
+          <ul class="catalog-body"></ul>
+        </div>
+      </div>
+      
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              sidebar-container">
+
+        
+        
+        <section>
+  
+  
+  <hr class="hidden-sm hidden-xs">
+  
+  <h5>FEATURED TAGS</h5>
+  <div class="tags">
+    
+    <a href="/tags/docker/">docker</a>
+    
+    <a href="/tags/k8s/">K8s</a>
+    
+    <a href="/tags/%E5%AE%B9%E5%99%A8/">容器</a>
+    
+  </div>
+</section>
+
+        
+        
+
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+  
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        
+        <ul class="list-inline text-center"></ul>
+
+        <p class="copyright text-muted">
+          Copyright &copy; HOI 2023  
+          <br>
+          Powered by <a href="https://gohugo.io">Hugo</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src=/js/jquery.min.js></script>
+<script src=/js/bootstrap.min.js crossorigin="anonymous"></script>
+
+
+
+<script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
+
+
+<script src=/js/simple-jekyll-search.min.js></script>
+
+
+<script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
+
+
+
+
+
+
+<script type="text/javascript">
+  function generateCatalog(selector) {
+    _containerSelector = 'div.post-container'
+    
+    var P = $(_containerSelector), a, n, t, l, i, c;
+    a = P.find('h1,h2,h3,h4');
+    
+    $(selector).html('')
+    
+    a.each(function () {
+      n = $(this).prop('tagName').toLowerCase();
+      i = "#" + $(this).prop('id');
+      t = $(this).text();
+      c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+      l = $('<li class="' + n + '_nav"></li>').append(c);
+      $(selector).append(l);
+    });
+    return true;
+  }
+
+  generateCatalog(".catalog-body");
+
+  
+  $(".catalog-toggle").click((function (e) {
+    e.preventDefault();
+    $('.side-catalog').toggleClass("fold")
+  }))
+</script>
+
+
+<script type="text/javascript" src='/js/jquery.nav.min.ade6bde8f9fcc6a4b40852cb892e9f5912340ab8fe1305149d917fdd16fffd8d.js'></script>
+<script>
+   $(document).ready( function () {
+    $('.catalog-body').onePageNav({
+      currentClass: "active",
+      changeHash: !1,
+      easing: "swing",
+      filter: "",
+      scrollSpeed: 700,
+      scrollOffset: 0,
+      scrollThreshold: .2,
+      begin: null,
+      end: null,
+      scrollChange: null,
+      padding: 80
+    });
+  });
+</script>
+
+
+
+
+
+
+
+
+
+<script src="/zoomjs/zoom.min.js"></script>
+
+</body>
+
+</html>

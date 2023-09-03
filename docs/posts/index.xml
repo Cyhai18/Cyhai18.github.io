@@ -2,9 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on HOI</title>
-    <link>http://example.org/posts/</link>
+    <link>https://cyhai18.github.io/posts/</link>
     <description>Recent content in Posts on HOI</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="http://example.org/posts/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <lastBuildDate>Thu, 03 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://cyhai18.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>认识容器</title>
+      <link>https://cyhai18.github.io/posts/know-containers/</link>
+      <pubDate>Thu, 03 Aug 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://cyhai18.github.io/posts/know-containers/</guid>
+      <description>一、容器的发展大部分应用是运行在服务器之上的。曾经，每个服务器只能运行单一应用。 虚拟机的到来允许多应用能够稳定、安全地同时运行在一个服务器中</description>
+    </item>
+    
   </channel>
 </rss>
